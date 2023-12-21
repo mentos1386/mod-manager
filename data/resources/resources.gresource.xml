@@ -2,8 +2,11 @@
 <gresources>
   <gresource prefix="/dev/mnts/ModManager/">
     <!-- see https://gtk-rs.org/gtk4-rs/git/docs/gtk4/struct.Application.html#automatic-resources -->
-    <file compressed="true" preprocess="xml-stripblanks" alias="gtk/help-overlay.ui">ui/shortcuts.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/window.ui</file>
+    <file compressed="true">ui/windows/main/main.ui</file>
+    <file compressed="true">ui/windows/main/pages/welcome.ui</file>
+    <file compressed="true">ui/windows/main/pages/games_and_mods.ui</file>
+    <file compressed="true">ui/windows/add_new_game/add_new_game.ui</file>
+    <file compressed="true">ui/components/mods_list.ui</file>
     <file compressed="true">style.css</file>
   </gresource>
 </gresources>

@@ -9,3 +9,4 @@
 /.flatpak/
 /vendor
 /.vscode
+/src/config.rs

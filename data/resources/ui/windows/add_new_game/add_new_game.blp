@@ -1,0 +1,46 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $ModManagerWindowAddNewGame : Adw.ApplicationWindow {
+  default-width: 600;
+  default-height: 400;
+  title: _("Add a new game");
+
+  content: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar header_bar {
+      show-back-button: true;
+    }
+
+    content: Box {
+      orientation: vertical;
+      halign: center;
+      valign: center;
+
+      Label {
+        label: _("Chose a game to manage mods for");
+        margin-bottom: 30;
+        justify: center;
+        wrap: true;
+        styles ["title-1"]
+      }
+
+      DropDown games_dropdown {
+        margin-bottom: 30;
+      }
+
+      FileDialog mods_folder {
+        title: _("Chose a location where to install the mods");
+      }
+
+      Button chose_button {
+        label: _("Chose the location");
+        margin-bottom: 30;
+      }
+
+      Button complete_button {
+        label: _("Add game");
+      }
+    };
+  };
+}

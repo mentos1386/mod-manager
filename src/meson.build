@@ -5,10 +5,19 @@ global_conf.set_quoted('PROFILE', profile)
 global_conf.set_quoted('VERSION', version + version_suffix)
 global_conf.set_quoted('GETTEXT_PACKAGE', gettext_package)
 global_conf.set_quoted('LOCALEDIR', localedir)
+global_conf.set_quoted('API_KEY', '$2a$10$AtaQ/fkWxMoVHVhO.6PMoOHQq7ERdSdpmegqJ09.2Mgj5iTQP3r.2')
 config = configure_file(
   input: 'config.rs.in',
   output: 'config.rs',
   configuration: global_conf
+)
+
+# Copy the config.rs output to the source directory.
+run_command(
+  'cp',
+  meson.project_build_root() / 'src' / 'config.rs',
+  meson.project_source_root() / 'src' / 'config.rs',
+  check: true
 )
 
 cargo_options = [ '--manifest-path', meson.project_source_root() / 'Cargo.toml' ]

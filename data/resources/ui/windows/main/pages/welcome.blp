@@ -1,0 +1,28 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $Welcome: Adw.Bin {
+    Adw.ToolbarView {
+        [top]
+        Adw.HeaderBar {
+        }
+
+        content: Box {
+            orientation: vertical;
+            halign: center;
+            valign: center;
+    
+            Label {
+                label: "No games added yet!";
+                justify: center;
+                wrap: true;
+                styles ["title-1"]
+                margin-bottom: 30;
+            }
+            Button add_new_game {
+                label: "Add new game";
+                styles ["suggested-action", "pill"]
+            }
+        };
+    }
+}

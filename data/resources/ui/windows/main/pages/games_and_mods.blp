@@ -1,0 +1,45 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $GamesAndMods: Adw.Bin {
+    Adw.NavigationSplitView {
+        sidebar: Adw.NavigationPage {
+            title: "Games";
+            tag: "sidebar";
+
+            Adw.ToolbarView {
+                [top]
+                Adw.HeaderBar {
+                }
+
+                content: Box {
+                    Label {
+                        label: "The Sims 4";
+                    }
+                    Label {
+                        label: "The Sims 3";
+                    }
+                    Label {
+                        label: "The Sims 2";
+                    }
+                };
+            }
+        };
+        content: Adw.NavigationPage{
+            title: "Mods";
+            tag: "content";
+    
+            Adw.ToolbarView {
+                [top]
+                Adw.HeaderBar {
+                }
+    
+                content: Box {
+                    Label {
+                        label: "Mods";
+                    }
+                };
+            }
+        };
+    }
+}
