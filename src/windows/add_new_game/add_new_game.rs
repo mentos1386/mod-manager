@@ -20,10 +20,12 @@
 
 use adw::subclass::prelude::*;
 use glib::clone;
+use gtk::glib::subclass::types::FromObject;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 
 use crate::api::*;
+use crate::settings::ModManagerSettings;
 
 mod imp {
     use super::*;
@@ -71,26 +73,43 @@ impl ModManagerWindowAddNewGame {
         glib::Object::builder().build()
     }
 
+    pub fn show() -> Self {
+        let welcome = ModManagerWindowAddNewGame::new();
+        welcome.setup();
+        welcome.set_modal(true);
+        welcome.present();
+
+        return welcome;
+    }
+
     pub fn setup(&self) {
         let games = games::get_games();
         let games_strs: Vec<&str> = games.iter().map(|s| s.as_str()).collect();
         let games_list = &gtk::StringList::new(&games_strs);
 
-        let complete_button = &imp::ModManagerWindowAddNewGame::from_obj(self).complete_button;
-        let games_dropdown = &imp::ModManagerWindowAddNewGame::from_obj(self).games_dropdown;
+        let obj = self.imp();
 
-        games_dropdown.set_property("model", games_list);
+        obj.games_dropdown.set_property("model", games_list);
 
         let instance = self;
 
-        complete_button.connect_clicked(clone!(@strong instance  => move |_| {
-            //let selected_game = games_dropdown.selected_item();
+        obj.complete_button
+            .connect_clicked(clone!(@strong instance, @strong games_list  => move |_| {
+                //let selected_game = games_dropdown.selected_item();
 
-            println!("complete button clicked");
+                let settings = ModManagerSettings::default();
+                let game_selected = games_list.string(instance.imp().games_dropdown.selected()).unwrap().to_string();
+                println!("complete button clicked, selected game: {:?}", &game_selected);
 
-            //if let Some(selected_game) = selected_game {
-                instance.hide()
-            //}
-        }));
+                let mut selected = settings.games().to_vec();
+                selected.push(game_selected);
+
+                settings.set_strv("games", selected);
+
+
+                //if let Some(selected_game) = selected_game {
+                    instance.hide()
+                //}
+            }));
     }
 }

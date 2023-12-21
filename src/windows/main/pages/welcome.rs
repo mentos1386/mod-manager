@@ -52,10 +52,7 @@ mod imp {
             self.parent_constructed();
 
             self.add_new_game.connect_clicked(|_| {
-                let welcome = ModManagerWindowAddNewGame::new();
-                welcome.setup();
-                welcome.set_modal(true);
-                welcome.present();
+                ModManagerWindowAddNewGame::show();
             });
         }
     }

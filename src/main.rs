@@ -19,13 +19,13 @@ mod api;
 mod application;
 mod components;
 mod config;
+mod settings;
 mod windows;
 
 use self::application::ModManagerApplication;
 
 use config::{GETTEXT_PACKAGE, LOCALEDIR, RESOURCES_FILE};
 use gettextrs::{gettext, LocaleCategory};
-use gtk::prelude::*;
 use gtk::{gio, glib};
 
 fn main() -> glib::ExitCode {

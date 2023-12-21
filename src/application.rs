@@ -25,10 +25,15 @@ use tracing::{debug, info};
 
 use crate::config::VERSION;
 use crate::config::{APP_ID, PKGDATADIR, PROFILE};
+use crate::settings::ModManagerSettings;
 use crate::windows::main::ModManagerWindowMain;
 use crate::windows::main::Welcome;
 
 mod imp {
+
+    use games_and_mods::GamesAndMods;
+
+    use crate::windows::games_and_mods;
 
     use super::*;
 
@@ -47,14 +52,6 @@ mod imp {
             self.parent_constructed();
             let obj = self.obj();
             obj.set_accels_for_action("app.quit", &["<primary>q"]);
-
-            //let settings = ModManagerSettings::default();
-            // let games = settings.games();
-
-            //let settings = gio::Settings::new(APP_ID);
-            //let games = settings.string("games");
-
-            //println!("Games: {:?}", games);
         }
     }
 
@@ -70,9 +67,7 @@ mod imp {
             let window = if let Some(window) = application.active_window() {
                 window
             } else {
-                // TODO: Figure our if show welcome or games_and_mods.
-                let welcome = Welcome::new();
-                let window = ModManagerWindowMain::new(&*application, &welcome.upcast());
+                let window = ModManagerWindowMain::new(&*application);
                 window.upcast()
             };
 

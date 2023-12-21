@@ -21,11 +21,26 @@ use gtk::{gio, glib};
 
 mod imp {
 
+    use adw::prelude::PreferencesRowExt;
+    use gtk::glib::clone;
+    use tracing::info;
+
+    use crate::{api::games, settings::ModManagerSettings, windows::ModManagerWindowAddNewGame};
+
     use super::*;
 
     #[derive(Debug, Default, gtk::CompositeTemplate)]
     #[template(resource = "/dev/mnts/ModManager/ui/windows/main/pages/games_and_mods.ui")]
-    pub struct GamesAndMods {}
+    pub struct GamesAndMods {
+        #[template_child]
+        pub add_new_game: TemplateChild<gtk::Button>,
+
+        #[template_child]
+        pub remove_all_games: TemplateChild<gtk::Button>,
+
+        #[template_child]
+        pub games_list: TemplateChild<gtk::ListBox>,
+    }
 
     #[glib::object_subclass]
     impl ObjectSubclass for GamesAndMods {
@@ -42,7 +57,42 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for GamesAndMods {}
+    impl ObjectImpl for GamesAndMods {
+        fn constructed(&self) {
+            self.parent_constructed();
+            let obj = self.obj();
+
+            self.remove_all_games.connect_clicked(|_| {
+                let settings = ModManagerSettings::default();
+                settings.set_games(&[]);
+                println!("Remove all games button clicked");
+            });
+
+            self.add_new_game.connect_clicked(|_| {
+                ModManagerWindowAddNewGame::show();
+            });
+
+            let settings = ModManagerSettings::default();
+
+            for game in settings.games() {
+                info!("Adding game {} to list", game);
+                let row = adw::ActionRow::new();
+                row.set_title(&game);
+                obj.imp().games_list.append(&row);
+            }
+
+            settings.connect_games_changed(clone!(@weak obj, @strong settings => move |_| {
+                info!("Games changed, modifying list");
+                obj.imp().games_list.remove_all();
+                for game in settings.games() {
+                    info!("Adding game {} to list", game);
+                    let row = adw::ActionRow::new();
+                    row.set_title(&game);
+                    obj.imp().games_list.append(&row);
+                }
+            }));
+        }
+    }
     impl WidgetImpl for GamesAndMods {}
     impl BinImpl for GamesAndMods {}
 }

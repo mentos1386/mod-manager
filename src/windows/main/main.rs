@@ -18,10 +18,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 use adw::subclass::prelude::*;
 use gtk::prelude::*;
 use gtk::{gio, glib};
+use tracing::{debug, info};
 
 use crate::config::PROFILE;
+use crate::settings::ModManagerSettings;
+use crate::windows::GamesAndMods;
+
+use super::Welcome;
 
 mod imp {
+
+    use gtk::glib::clone;
 
     use super::*;
 
@@ -53,6 +60,27 @@ mod imp {
             if PROFILE == "Devel" {
                 obj.add_css_class("devel");
             }
+
+            let settings = ModManagerSettings::default();
+            settings.connect_games_changed(clone!(@strong obj, @strong settings => move |_| {
+                info!("Games changed, deciding on initial page.");
+
+                let page: gtk::Widget = if settings.games().len() > 0 {
+                    GamesAndMods::new().upcast()
+                } else {
+                    Welcome::new().upcast()
+                };
+
+                obj.set_property("content", page);
+            }));
+
+            let page: gtk::Widget = if settings.games().len() > 0 {
+                GamesAndMods::new().upcast()
+            } else {
+                Welcome::new().upcast()
+            };
+
+            obj.set_property("content", page)
         }
     }
 
@@ -69,10 +97,9 @@ glib::wrapper! {
 }
 
 impl ModManagerWindowMain {
-    pub fn new<P: glib::IsA<gtk::Application>>(application: &P, content: &gtk::Widget) -> Self {
+    pub fn new<P: glib::IsA<gtk::Application>>(application: &P) -> Self {
         glib::Object::builder()
             .property("application", application)
-            .property("content", content)
             .build()
     }
 }

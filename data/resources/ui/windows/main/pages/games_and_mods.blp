@@ -10,18 +10,14 @@ template $GamesAndMods: Adw.Bin {
             Adw.ToolbarView {
                 [top]
                 Adw.HeaderBar {
+                    [end]
+                    Button add_new_game {
+                        label: "Add game";
+                    }
                 }
 
-                content: Box {
-                    Label {
-                        label: "The Sims 4";
-                    }
-                    Label {
-                        label: "The Sims 3";
-                    }
-                    Label {
-                        label: "The Sims 2";
-                    }
+                content: ListBox games_list {
+                    styles ["navigation-sidebar"]
                 };
             }
         };
@@ -32,11 +28,17 @@ template $GamesAndMods: Adw.Bin {
             Adw.ToolbarView {
                 [top]
                 Adw.HeaderBar {
+                    [title]
+                    SearchEntry search {
+                    }
                 }
     
                 content: Box {
                     Label {
                         label: "Mods";
+                    }
+                    Button remove_all_games {
+                        label: "Remove all games";
                     }
                 };
             }

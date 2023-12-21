@@ -13,10 +13,9 @@
       <default>false</default>
       <summary>Window maximized state</summary>
     </key>
-    <key name="games" type="{ss}">
-      <default>{}</default>
-      <summary>Dictionary of games being managed. First string is game name second is path to mods
-        folder.</summary>
+    <key name="games" type="as">
+      <default>[]</default>
+      <summary>Games</summary>
     </key>
   </schema>
 </schemalist>
