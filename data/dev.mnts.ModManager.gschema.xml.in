@@ -13,9 +13,9 @@
       <default>false</default>
       <summary>Window maximized state</summary>
     </key>
-    <key name="games" type="as">
+    <key name="games" type="a(ss)">
       <default>[]</default>
-      <summary>Games</summary>
+      <summary>List of games. (Slug, Path)</summary>
     </key>
   </schema>
 </schemalist>

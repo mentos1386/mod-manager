@@ -21,14 +21,13 @@ use gtk::{gio, glib};
 use tracing::{debug, info};
 
 use crate::config::PROFILE;
-use crate::settings::ModManagerSettings;
 use crate::windows::GamesAndMods;
 
 use super::Welcome;
+use crate::settings::ModManagerSettings;
+use gtk::glib::clone;
 
 mod imp {
-
-    use gtk::glib::clone;
 
     use super::*;
 
@@ -62,10 +61,10 @@ mod imp {
             }
 
             let settings = ModManagerSettings::default();
-            settings.connect_games_changed(clone!(@strong obj, @strong settings => move |_| {
+            settings.on_managed_games_changed(clone!(@strong obj, @strong settings => move || {
                 info!("Games changed, deciding on initial page.");
 
-                let page: gtk::Widget = if settings.games().len() > 0 {
+                let page: gtk::Widget = if settings.get_managed_games().len() > 0 {
                     GamesAndMods::new().upcast()
                 } else {
                     Welcome::new().upcast()
@@ -74,7 +73,7 @@ mod imp {
                 obj.set_property("content", page);
             }));
 
-            let page: gtk::Widget = if settings.games().len() > 0 {
+            let page: gtk::Widget = if settings.get_managed_games().len() > 0 {
                 GamesAndMods::new().upcast()
             } else {
                 Welcome::new().upcast()

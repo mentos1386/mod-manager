@@ -25,7 +25,7 @@ use gtk::prelude::*;
 use gtk::{gio, glib};
 
 use crate::api::*;
-use crate::settings::ModManagerSettings;
+use crate::settings::{Game, ModManagerSettings};
 
 mod imp {
     use super::*;
@@ -83,9 +83,12 @@ impl ModManagerWindowAddNewGame {
     }
 
     pub fn setup(&self) {
-        let games = games::get_games();
-        let games_strs: Vec<&str> = games.iter().map(|s| s.as_str()).collect();
-        let games_list = &gtk::StringList::new(&games_strs);
+        let settings = ModManagerSettings::default();
+
+        let supported_games = settings.get_supported_games();
+        let games_strs: Vec<String> = supported_games.iter().map(|s| s.to_name()).collect();
+        let games_list =
+            &gtk::StringList::new(&games_strs.iter().map(|s| s.as_str()).collect::<Vec<&str>>());
 
         let obj = self.imp();
 
@@ -94,18 +97,13 @@ impl ModManagerWindowAddNewGame {
         let instance = self;
 
         obj.complete_button
-            .connect_clicked(clone!(@strong instance, @strong games_list  => move |_| {
+            .connect_clicked(clone!(@strong instance, @strong games_list, @strong settings  => move |_| {
                 //let selected_game = games_dropdown.selected_item();
 
-                let settings = ModManagerSettings::default();
                 let game_selected = games_list.string(instance.imp().games_dropdown.selected()).unwrap().to_string();
                 println!("complete button clicked, selected game: {:?}", &game_selected);
 
-                let mut selected = settings.games().to_vec();
-                selected.push(game_selected);
-
-                settings.set_strv("games", selected);
-
+                settings.add_managed_game(Game::from_name(game_selected, "".to_string()));
 
                 //if let Some(selected_game) = selected_game {
                     instance.hide()

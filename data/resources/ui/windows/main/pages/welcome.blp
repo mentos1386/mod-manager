@@ -7,21 +7,17 @@ template $Welcome: Adw.Bin {
         Adw.HeaderBar {
         }
 
-        content: Box {
-            orientation: vertical;
-            halign: center;
-            valign: center;
-    
-            Label {
-                label: "No games added yet!";
-                justify: center;
-                wrap: true;
-                styles ["title-1"]
-                margin-bottom: 30;
-            }
-            Button add_new_game {
-                label: "Add new game";
-                styles ["suggested-action", "pill"]
+        content: Adw.Clamp {
+                Adw.StatusPage {
+                title: "No games added yet.";
+                description: "Click the button below to add a new game.";
+
+                icon-name: "start-here-symbolic";
+
+                Button add_new_game {
+                    label: "Add new game";
+                    styles ["suggested-action", "pill"]
+                }
             }
         };
     }

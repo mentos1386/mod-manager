@@ -25,15 +25,9 @@ use tracing::{debug, info};
 
 use crate::config::VERSION;
 use crate::config::{APP_ID, PKGDATADIR, PROFILE};
-use crate::settings::ModManagerSettings;
 use crate::windows::main::ModManagerWindowMain;
-use crate::windows::main::Welcome;
 
 mod imp {
-
-    use games_and_mods::GamesAndMods;
-
-    use crate::windows::games_and_mods;
 
     use super::*;
 

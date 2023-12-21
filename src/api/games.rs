@@ -3,9 +3,14 @@ use serde::Deserialize;
 use crate::api::*;
 
 #[derive(Deserialize, Debug)]
-struct Response {
+struct GetGamesResponse {
     data: Vec<Game>,
     pagination: Pagination,
+}
+
+#[derive(Deserialize, Debug)]
+struct GetGameResponse {
+    data: Game,
 }
 
 #[derive(Deserialize, Debug)]
@@ -40,7 +45,18 @@ pub fn get_games() -> Vec<String> {
         .get(&format!("{}/v1/games", base::API_URL))
         .send()
         .unwrap();
-    let json: Response = response.json().unwrap();
+    let json: GetGamesResponse = response.json().unwrap();
 
     return json.data.iter().map(|game| game.name.clone()).collect();
+}
+
+pub fn get_game(id: &i32) -> Game {
+    let client = base::get_curse_forge_client().unwrap();
+    let response = client
+        .get(&format!("{}/v1/games/{}", base::API_URL, id))
+        .send()
+        .unwrap();
+    let json: GetGameResponse = response.json().unwrap();
+
+    return json.data;
 }

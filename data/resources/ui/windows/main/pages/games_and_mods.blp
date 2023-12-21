@@ -12,7 +12,11 @@ template $GamesAndMods: Adw.Bin {
                 Adw.HeaderBar {
                     [end]
                     Button add_new_game {
-                        label: "Add game";
+                        icon-name: "list-add-symbolic";
+                    }
+
+                    Button remove_all_games {
+                        icon-name: "list-remove-symbolic";
                     }
                 }
 
@@ -33,13 +37,24 @@ template $GamesAndMods: Adw.Bin {
                     }
                 }
     
-                content: Box {
-                    Label {
+                content: Adw.Clamp {
+                    orientation: vertical;
+
+                    Label title {
                         label: "Mods";
+                        styles ["title-1"]
                     }
-                    Button remove_all_games {
-                        label: "Remove all games";
+
+                    Adw.Carousel {
                     }
+                    Adw.CarouselIndicatorDots {}
+
+                    ScrolledWindow {
+                        vexpand: true;
+                        ListBox mods_list {
+                        }
+                    }
+
                 };
             }
         };

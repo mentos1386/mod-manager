@@ -1,4 +1,13 @@
+use crate::settings::Game;
+
 pub const API_URL: &str = "https://api.curseforge.com";
+
+pub fn get_game_id(game: Game) -> i32 {
+    match game {
+        Game::TheSims4(_) => 78062,
+        _ => panic!("Game not supported"),
+    }
+}
 
 pub fn get_curse_forge_client() -> Result<reqwest::blocking::Client, reqwest::Error> {
     let mut api_key_header =

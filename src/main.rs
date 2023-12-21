@@ -17,7 +17,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 mod api;
 mod application;
-mod components;
 mod config;
 mod settings;
 mod windows;

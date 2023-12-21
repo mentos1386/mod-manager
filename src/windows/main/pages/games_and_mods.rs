@@ -25,7 +25,11 @@ mod imp {
     use gtk::glib::clone;
     use tracing::info;
 
-    use crate::{api::games, settings::ModManagerSettings, windows::ModManagerWindowAddNewGame};
+    use crate::{
+        api::{games, get_game_id, get_mods},
+        settings::{Game, ModManagerSettings},
+        windows::ModManagerWindowAddNewGame,
+    };
 
     use super::*;
 
@@ -40,6 +44,9 @@ mod imp {
 
         #[template_child]
         pub games_list: TemplateChild<gtk::ListBox>,
+
+        #[template_child]
+        pub mods_list: TemplateChild<gtk::ListBox>,
     }
 
     #[glib::object_subclass]
@@ -64,7 +71,7 @@ mod imp {
 
             self.remove_all_games.connect_clicked(|_| {
                 let settings = ModManagerSettings::default();
-                settings.set_games(&[]);
+                settings.remove_managed_games();
                 println!("Remove all games button clicked");
             });
 
@@ -74,23 +81,40 @@ mod imp {
 
             let settings = ModManagerSettings::default();
 
-            for game in settings.games() {
-                info!("Adding game {} to list", game);
+            for game in settings.get_managed_games() {
+                info!("Adding game {:?} to list", game);
                 let row = adw::ActionRow::new();
-                row.set_title(&game);
+                row.set_title(&game.to_name());
                 obj.imp().games_list.append(&row);
             }
 
-            settings.connect_games_changed(clone!(@weak obj, @strong settings => move |_| {
+            settings.on_managed_games_changed(clone!(@weak obj, @strong settings => move || {
                 info!("Games changed, modifying list");
-                obj.imp().games_list.remove_all();
-                for game in settings.games() {
-                    info!("Adding game {} to list", game);
+                for game in settings.get_managed_games() {
+                    info!("Adding game {:?} to list", game);
                     let row = adw::ActionRow::new();
-                    row.set_title(&game);
+                    row.set_title(&game.to_name());
                     obj.imp().games_list.append(&row);
                 }
             }));
+
+            let mods = get_mods(&get_game_id(Game::TheSims4("".to_string())))
+                .iter()
+                .for_each(|mod_| {
+                    let card = gtk::Box::new(gtk::Orientation::Vertical, 10);
+                    card.set_css_classes(&["card"]);
+
+                    let title = gtk::Label::new(Some(&mod_.name));
+                    title.set_css_classes(&["heading"]);
+
+                    let description = gtk::Label::new(Some(&mod_.summary));
+                    description.set_css_classes(&["body"]);
+
+                    card.append(&title);
+                    card.append(&description);
+
+                    obj.imp().mods_list.append(&card);
+                });
         }
     }
     impl WidgetImpl for GamesAndMods {}
