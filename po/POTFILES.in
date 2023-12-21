@@ -1,0 +1,6 @@
+data/dev.mnts.ModManager.desktop.in.in
+data/dev.mnts.ModManager.gschema.xml.in
+data/dev.mnts.ModManager.metainfo.xml.in.in
+data/resources/ui/shortcuts.ui
+data/resources/ui/window.ui
+src/application.rs
