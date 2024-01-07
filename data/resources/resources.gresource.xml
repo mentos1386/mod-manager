@@ -6,6 +6,7 @@
     <file compressed="true">ui/windows/main/pages/welcome.ui</file>
     <file compressed="true">ui/windows/main/pages/games_and_mods.ui</file>
     <file compressed="true">ui/windows/add_new_game/add_new_game.ui</file>
+    <file compressed="true">ui/components/card.ui</file>
     <file compressed="true">style.css</file>
   </gresource>
 </gresources>

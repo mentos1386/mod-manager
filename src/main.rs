@@ -17,11 +17,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 mod api;
 mod application;
+mod components;
 mod config;
+mod dispatch;
 mod settings;
 mod windows;
 
 use self::application::ModManagerApplication;
+use self::dispatch::spawn_task_handler;
 
 use config::{GETTEXT_PACKAGE, LOCALEDIR, RESOURCES_FILE};
 use gettextrs::{gettext, LocaleCategory};
@@ -42,6 +45,8 @@ fn main() -> glib::ExitCode {
     let resources = gio::Resource::load(RESOURCES_FILE).expect("Could not load resources");
     gio::resources_register(&resources);
 
+    let context = glib::MainContext::default();
+
     // Create a new GtkApplication. The application manages our main loop,
     // application windows, integration with the window manager/compositor, and
     // desktop features such as file opening and single-instance applications.
@@ -51,5 +56,9 @@ fn main() -> glib::ExitCode {
     // exits. Upon return, we have our exit code to return to the shell. (This
     // is the code you see when you do `echo $?` after running a command in a
     // terminal.
-    app.run()
+    context.invoke_local(move || {
+        app.run();
+    });
+
+    std::process::exit(0);
 }

@@ -25,6 +25,7 @@ use tracing::{debug, info};
 
 use crate::config::VERSION;
 use crate::config::{APP_ID, PKGDATADIR, PROFILE};
+use crate::dispatch::Worker;
 use crate::windows::main::ModManagerWindowMain;
 
 mod imp {
@@ -32,7 +33,9 @@ mod imp {
     use super::*;
 
     #[derive(Debug, Default)]
-    pub struct ModManagerApplication {}
+    pub struct ModManagerApplication {
+        worker: Option<Worker>,
+    }
 
     #[glib::object_subclass]
     impl ObjectSubclass for ModManagerApplication {

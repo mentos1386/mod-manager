@@ -183,12 +183,23 @@ struct Module {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct Logo {
+    pub id: i32,
+    //pub mod_id: i32,
+    //pub title: String,
+    //pub description: String,
+    //pub thumbnail_url: String,
+    pub url: String,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct Mod {
     pub name: String,
     //pub modId: i32,
     //pub gameSlug: String,
     //pub gameId: i32,
     pub summary: String,
+    pub logo: Logo,
     //pub defaultFileId: i32,
     //pub downloadCount: i32,
     //pub latestFiles: Vec<LatestFile>,

@@ -15,21 +15,22 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
+use adw::prelude::PreferencesRowExt;
 use adw::subclass::prelude::*;
+use gtk::glib::clone;
 use gtk::prelude::*;
 use gtk::{gio, glib};
+use tracing::info;
+
+use crate::{
+    api::{get_game_id, get_mods},
+    components::Card,
+    dispatch::spawn_task_handler,
+    settings::{Game, ModManagerSettings},
+    windows::ModManagerWindowAddNewGame,
+};
 
 mod imp {
-
-    use adw::prelude::PreferencesRowExt;
-    use gtk::glib::clone;
-    use tracing::info;
-
-    use crate::{
-        api::{games, get_game_id, get_mods},
-        settings::{Game, ModManagerSettings},
-        windows::ModManagerWindowAddNewGame,
-    };
 
     use super::*;
 
@@ -66,6 +67,9 @@ mod imp {
 
     impl ObjectImpl for GamesAndMods {
         fn constructed(&self) {
+            let context = glib::MainContext::default();
+            let worker = spawn_task_handler(&context);
+
             self.parent_constructed();
             let obj = self.obj();
 
@@ -101,17 +105,8 @@ mod imp {
             let mods = get_mods(&get_game_id(Game::TheSims4("".to_string())))
                 .iter()
                 .for_each(|mod_| {
-                    let card = gtk::Box::new(gtk::Orientation::Vertical, 10);
-                    card.set_css_classes(&["card"]);
-
-                    let title = gtk::Label::new(Some(&mod_.name));
-                    title.set_css_classes(&["heading"]);
-
-                    let description = gtk::Label::new(Some(&mod_.summary));
-                    description.set_css_classes(&["body"]);
-
-                    card.append(&title);
-                    card.append(&description);
+                    let card = Card::new();
+                    card.bind(worker.clone(), &mod_.name, &mod_.summary, &mod_.logo.url);
 
                     obj.imp().mods_list.append(&card);
                 });
