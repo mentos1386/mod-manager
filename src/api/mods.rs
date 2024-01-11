@@ -193,7 +193,22 @@ pub struct Logo {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Mod {
+pub struct Category {
+    pub id: i32,
+    // game_id: i32,
+    pub name: String,
+    pub slug: String,
+    // url: String,
+    // pub icon_url: String,
+    // date_modified: DateTime<Utc>,
+    // is_class: bool,
+    // class_id: i32,
+    // parent_category_id: i32,
+    // display_index: i32,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct GameMod {
     pub name: String,
     //pub modId: i32,
     //pub gameSlug: String,
@@ -212,6 +227,7 @@ pub struct Mod {
     //pub gamePopularityRank: i32,
     //pub isAvailable: bool,
     //pub thumbsUpCount: i32,
+    pub categories: Vec<Category>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -260,7 +276,7 @@ struct LatestEarlyAccessFileIndex {
 
 #[derive(Debug, Deserialize)]
 struct GetModsResponse {
-    data: Vec<Mod>,
+    data: Vec<GameMod>,
     pagination: Pagination,
 }
 
@@ -272,7 +288,7 @@ struct Pagination {
     totalCount: i32,
 }
 
-pub fn get_mods(game_id: &i32) -> Vec<Mod> {
+pub fn get_mods(game_id: &i32) -> Vec<GameMod> {
     let client = get_curse_forge_client().unwrap();
 
     let response = client

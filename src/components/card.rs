@@ -1,8 +1,10 @@
 use adw::subclass::prelude::*;
+use gtk::prelude::BoxExt;
 use gtk::CompositeTemplate;
 use gtk::{gio, glib};
 
 use crate::api::loaders::ImageLoader;
+use crate::api::GameMod;
 use crate::dispatch::Worker;
 
 mod imp {
@@ -20,6 +22,9 @@ mod imp {
 
         #[template_child]
         pub image: TemplateChild<gtk::Image>,
+
+        #[template_child]
+        pub footer: TemplateChild<gtk::Box>,
     }
 
     #[glib::object_subclass]
@@ -53,21 +58,47 @@ impl Card {
         glib::Object::builder().build()
     }
 
-    pub fn bind(&self, worker: Worker, heading: &str, body: &str, image_url: &str) {
+    fn set_heading(&self, heading: &str) {
         let widget = self.imp();
-
         widget.heading.set_text(heading);
+    }
+
+    fn set_body(&self, body: &str) {
+        let widget = self.imp();
         widget.body.set_text(body);
+    }
 
-        println!("image_url: {}", image_url);
+    fn set_image_from_url(&self, worker: Worker, url: String) {
+        let card = self.imp();
+        let image = card.image.clone();
 
-        let url = image_url.to_string();
-
-        let image = widget.image.clone();
         worker.send_local_task(async move {
             let loader = ImageLoader::new();
             let pixbuf = loader.from_url(url).await;
             image.set_from_pixbuf(pixbuf.as_ref());
         });
+    }
+
+    pub fn new_for_game_mod(worker: Worker, game_mod: &GameMod) -> Self {
+        let card = Self::new();
+        let widget = card.imp();
+
+        card.set_image_from_url(worker, game_mod.logo.url.to_string());
+        card.set_heading(&game_mod.name);
+        card.set_body(&game_mod.summary);
+
+        let categories = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+        categories.append(&gtk::Label::new(Some("Categories: ")));
+
+        for category in &game_mod.categories {
+            let button = gtk::Button::builder()
+                .label(&category.name)
+                .css_classes(["pill", "flat"])
+                .build();
+            categories.append(&button);
+        }
+        widget.footer.append(&categories);
+
+        card
     }
 }

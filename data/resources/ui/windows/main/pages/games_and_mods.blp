@@ -37,24 +37,29 @@ template $GamesAndMods: Adw.Bin {
                     }
                 }
 
-                content: Adw.Clamp {
+                content: Box {
                     orientation: vertical;
 
                     Label title {
-                        label: "Mods";
-                        styles ["title-1"]
+                      label: "List of Mods";
+                      styles ["title-1"]
                     }
 
-                    Adw.Carousel {
+                    Label {
+                      halign: start;
+                      margin-bottom: 12;
+                      label: "Latest mods";
+                      styles ["title-2"]
                     }
-                    Adw.CarouselIndicatorDots {}
-
                     ScrolledWindow {
-                        vexpand: true;
-                        ListBox mods_list {
-                        }
+                      vexpand: true;
+                      hexpand: true;
+                      FlowBox mods_list {
+                        row-spacing: 12;
+                        column-spacing: 12;
+                        homogeneous: true;
+                      }
                     }
-
                 };
             }
         };

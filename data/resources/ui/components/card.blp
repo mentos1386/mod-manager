@@ -11,13 +11,20 @@ template $Card: Box {
 
   Box contents {
     orientation: vertical;
+    margin-start: 12;
+    margin-end: 12;
+    margin-top: 12;
+    margin-bottom: 12;
 
     Label heading {
       styles ["heading"]
     }
 
     Label body {
+      vexpand: true;
       styles ["body"]
     }
+
+    Box footer {}
   }
 }

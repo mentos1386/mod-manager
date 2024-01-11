@@ -47,7 +47,7 @@ mod imp {
         pub games_list: TemplateChild<gtk::ListBox>,
 
         #[template_child]
-        pub mods_list: TemplateChild<gtk::ListBox>,
+        pub mods_list: TemplateChild<gtk::FlowBox>,
     }
 
     #[glib::object_subclass]
@@ -102,12 +102,10 @@ mod imp {
                 }
             }));
 
-            let mods = get_mods(&get_game_id(Game::TheSims4("".to_string())))
+            get_mods(&get_game_id(Game::TheSims4("".to_string())))
                 .iter()
-                .for_each(|mod_| {
-                    let card = Card::new();
-                    card.bind(worker.clone(), &mod_.name, &mod_.summary, &mod_.logo.url);
-
+                .for_each(|item| {
+                    let card = Card::new_for_game_mod(worker.clone(), item);
                     obj.imp().mods_list.append(&card);
                 });
         }
