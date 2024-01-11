@@ -24,7 +24,6 @@ mod settings;
 mod windows;
 
 use self::application::ModManagerApplication;
-use self::dispatch::spawn_task_handler;
 
 use config::{GETTEXT_PACKAGE, LOCALEDIR, RESOURCES_FILE};
 use gettextrs::{gettext, LocaleCategory};

@@ -18,6 +18,9 @@ gsettings-macro = "0.1.20"
 gdk-pixbuf = "0.18.5"
 bytes = "1.5.0"
 futures = "0.3.30"
+tokio = { version = "1.35.1", features = ["full"] }
+glib = "0.18.5"
+gdk = "0.18.0"
 
 [dependencies.adw]
 package = "libadwaita"

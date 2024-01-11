@@ -1,5 +1,4 @@
 use adw::subclass::prelude::*;
-use glib::clone;
 use gtk::CompositeTemplate;
 use gtk::{gio, glib};
 
@@ -64,10 +63,11 @@ impl Card {
 
         let url = image_url.to_string();
 
-        worker.send_local_task(clone!(@weak widget => async move {
+        let image = widget.image.clone();
+        worker.send_local_task(async move {
             let loader = ImageLoader::new();
-            let pixbuf = loader.load_remote(url.as_str(), 800, 800);
-            widget.image.set_from_pixbuf(pixbuf.as_ref());
-        }));
+            let pixbuf = loader.from_url(url).await;
+            image.set_from_pixbuf(pixbuf.as_ref());
+        });
     }
 }
